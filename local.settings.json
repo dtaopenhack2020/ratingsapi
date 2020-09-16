@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "ProductsBaseURL": "https://serverlessohproduct.trafficmanager.net/api/GetProducts",
+    "ProductBaseURL": "https://serverlessohproduct.trafficmanager.net/api/GetProduct",
+    "UsersBaseUrl": "https://serverlessohuser.trafficmanager.net/api/GetUser",
+    "cosmosConnection": "AccountEndpoint=https://team20tr.documents.azure.com:443/;AccountKey=GrmVMINe94HGKE7UexQOvXsDI2sAuPViM346KpwG1Pte7ajNljFav3vgMr1kB8QQsPh0Z9w9dLXkVTponxBb7g=="
+  }
+}
