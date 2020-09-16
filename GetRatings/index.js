@@ -27,8 +27,8 @@ module.exports = async function (context, req) {
     var user = await request(userUrl + "?userId=" + userId)
     if (user.statusCode !== 200) {
         context.log("User not found");
-        res.status = 404;
-        res.body = ("User not found");
+        context.res.status = 404;
+        context.res.body = ("User not found");
     }
     else {
         console.log(`Querying container: Items`);
