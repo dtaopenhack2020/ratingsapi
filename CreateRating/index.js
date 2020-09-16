@@ -3,17 +3,6 @@ const request = require('async-request')
 const userUrl = process.env.UsersBaseUrl
 const productUrl = process.env.ProductBaseURL
 const { v4: uuidv4 } = require('uuid')
-const productsUrl = process.env.ProductsBaseURL
-
-/*
-// Cosmos Details
-// */
-// const { CosmosClient } = require("@azure/cosmos");
-
-// const endpoint = process.env.cosmosClient; // Add your endpoint
-// const key = process.env.cosmosKey; // Add the masterkey of the endpoint
-// const client = new CosmosClient({ endpoint, key });
-
 
 module.exports = async function (context, req) {
 
@@ -77,8 +66,4 @@ module.exports = async function (context, req) {
     }
 
     context.res = res;
-
-    // create guid
-    // create timestamp
-    // write to db
 }
