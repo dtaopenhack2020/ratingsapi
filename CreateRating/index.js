@@ -1,4 +1,8 @@
 module.exports = async function (context, req) {
+
+    // check if product exists
+    let usersUrl = process.env.UsersBaseUrl
+    context.log(usersUrl)
     context.log('JavaScript HTTP trigger function processed a request.');
 
     const name = (req.query.name || (req.body && req.body.name));
