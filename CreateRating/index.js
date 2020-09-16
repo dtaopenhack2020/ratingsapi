@@ -62,7 +62,7 @@ module.exports = async function (context, req) {
         res.headers = {
             "Content-Type": "application/json"
         }
-        res.body = "test" + JSON.stringify(obj)
+        res.body = JSON.stringify(obj)
     }
 
     context.res = res;
