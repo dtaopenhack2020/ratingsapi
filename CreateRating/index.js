@@ -1,7 +1,19 @@
-const request = require ('request')
+// const rp = require('request-promise');
+const request = require('async-request')
 const userUrl = process.env.UsersBaseUrl
 const productUrl = process.env.ProductBaseURL
+const { v4: uuidv4 } = require('uuid')
 const productsUrl = process.env.ProductsBaseURL
+
+/*
+// Cosmos Details
+// */
+// const { CosmosClient } = require("@azure/cosmos");
+
+// const endpoint = process.env.cosmosClient; // Add your endpoint
+// const key = process.env.cosmosKey; // Add the masterkey of the endpoint
+// const client = new CosmosClient({ endpoint, key });
+
 
 module.exports = async function (context, req) {
 
@@ -9,88 +21,64 @@ module.exports = async function (context, req) {
         // status: 200, /* Defaults to 200 */
         // body: responseMessage
     };
+    var obj
+
+    context.log(req.body)
 
     if (req.body) {
+
         try {
+
             var userId = req.body.userId;
             var productId = req.body.productId;
+            obj = req.body;
+
         } catch (error) {
             res.status = 404;
-            res.body = "Malformed Body"  
+            res.body = "Malformed Body"
+
+            context.res = res;
+
+            context.done();
+
         }
+
+        context.log(obj)
     }
-    
-    // check if product exists
-    // check if user exists
 
-    if (checkUser(userId) && checkProduct(productId) ) { //user and product were found
-        context.log('Body');
-        context.log(req.body);
-        
-        res.status = 200;
-        res.body = "user and product found"
+    // check if product and user exist
+    var product = await request(productUrl + "?productId=" + productId)
+    var user = await request(userUrl + "?userId=" + userId)
 
-        context.res = res;
+    if ((product.statusCode !== 200) || (user.statusCode !== 200)) {
 
-        context.done();
+        context.log("user or product not found")
+
+        res.status = 404;
+        res.body = "User or Product NOT found. Invalid request"
+
     }
     else {
-        res.status = 404;
-        res.body = "user and product NOT found. Invalid request"      
 
-        context.res = res;
+        // create guid
+        obj.id = uuidv4();
+        // create timestamp
+        obj.timestamp = (new Date).toISOString()
+        context.log(obj)
+        // write to db
 
-        context.done();
+        context.bindings.ratingsDoc = JSON.stringify(obj);
+
+        res.status = 200;
+        res.headers = {
+            "Content-Type": "application/json"
+        }
+        res.body = JSON.stringify(obj)
     }
+
+    context.res = res;
+
     // create guid
     // create timestamp
     // write to db
-        // context.log('JavaScript HTTP trigger function processed a request.');
-
-    // const name = (req.query.name || (req.body && req.body.name));
-    // const responseMessage = name
-    //     ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-    //     : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
-
-    // context.res = {
-    //     // status: 200, /* Defaults to 200 */
-    //     body: responseMessage
-    // };
-}
-
-function checkUser(userId) {
-    var params = {
-        uri: userUrl + userId,
-        body: {}
-    }
-
-    request.get(params, (error, response, data) => {
-        if (response.statusCode == 200) {
-            context.log(" User Found:")
-            context.log(response)
-
-            return true;
-        }
-
-        return false;
-    })
-}
-
-function checkProduct(productId) {
-    var params = {
-        uri: productUrl + productId,
-        body: {}
-    }
-
-    request.get(params, (error, response, data) => {
-
-        if (response.statusCode == 200) {
-            context.log("Product Found Found:")
-            context.log(response)
-
-            return true;
-        }
-
-        return false;
-    })
 }
